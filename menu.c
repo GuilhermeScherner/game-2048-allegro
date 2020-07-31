@@ -5,7 +5,7 @@
 #include <allegro5/allegro_primitives.h>
 
 int menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* disp, 
-              ALLEGRO_EVENT event, bool redraw, ALLEGRO_FONT* font, ALLEGRO_USTR* input){
+              ALLEGRO_EVENT event, ALLEGRO_FONT* font, ALLEGRO_USTR* input){
 
     
   al_clear_to_color(al_map_rgb(20,20,20));
@@ -58,6 +58,5 @@ int menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* disp
       }
     }
   }
-
-return 2;
+  return 4;
 }

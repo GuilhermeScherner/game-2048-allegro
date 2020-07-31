@@ -44,7 +44,7 @@ void drawnBlock(int *matrix, PosUpdate *posUpdate){
 
 
 int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* disp, 
-              ALLEGRO_EVENT event, bool redraw, ALLEGRO_FONT* font, PosUpdate *pos, int *matrix){
+              ALLEGRO_EVENT event, ALLEGRO_FONT* font, PosUpdate *pos, int *matrix){
     
     PosUpdate *posUpdate = pos; 
 

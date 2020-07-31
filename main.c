@@ -6,6 +6,8 @@
 #include "onUpdate.c"
 #include "nextBlock.c"
 #include "menu.c"
+#include "helpMenu.c"
+#include "rankMenu.c"
 
 
 int WIDTH = 490;
@@ -19,6 +21,7 @@ typedef struct positionsInWindow{
 
 
 
+enum state{Menu, Game, Help, Rank};
 
 
 void registerEvents(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* disp){
@@ -38,7 +41,7 @@ void closeGame(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY
 
 int main(int argc, char *argv[])
 {
-  int startGame = 0;
+  enum state stateCurrent = Menu;
   static int d[7][7] = {{0, 0, 0, 0, 0, 0, 0},
                         {0, 0, 0, 0, 0, 0, 0},
                         {0, 0, 0, 0, 0, 0, 0},
@@ -70,8 +73,6 @@ int main(int argc, char *argv[])
 
   registerEvents(queue, timer, disp);
 
-
-  bool redraw = true;
   
   ALLEGRO_EVENT event;
 
@@ -82,20 +83,47 @@ int main(int argc, char *argv[])
   //fillPos
 
   while(1){
-    int returnMenu = (menu(queue, timer, disp, event,redraw, font, input));
-    if(returnMenu == 1){
-      startGame = 0;
-      break;
-    }else if(returnMenu == 0 ){
-      startGame = 1;
-      break;
+    if(stateCurrent == Menu){
+      
+      int returnMenu = (menu(queue, timer, disp, event, font, input));
+       
+      if(returnMenu == 0){
+        stateCurrent = Game;
+        break;
+      }
+      else if(returnMenu == 2){
+        stateCurrent = Rank;
+        continue;
+      }
+      else if(returnMenu == 3){
+        stateCurrent = Help;
+        continue;
+      }else if(returnMenu == 1) break;
     }
-  
-   
+
+
+    else if(stateCurrent == Help){
+      int helpMenu = help(queue, timer, disp, event, font);
+      if(helpMenu == 0){
+        stateCurrent = Menu;
+        continue;
+      }
+      else if(helpMenu == 1)break;
+    }
+
+    else if(stateCurrent == Rank){
+      int rankMenu = rank(queue, timer, disp, event, font);
+      if(rankMenu == 0){
+        stateCurrent = Menu;
+        continue;
+      }
+      else if(rankMenu == 1)break;
+    }
+    
   }
   while(1){
-    if(!startGame) break;
-    if(onUpdate(queue, timer, disp, event,redraw, font, &pos, d)) break;
+    if(stateCurrent != Game) break;
+    if(onUpdate(queue, timer, disp, event, font, &pos, d)) break;
   }
 
   closeGame(queue, timer, disp, font);
