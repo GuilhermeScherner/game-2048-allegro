@@ -5,6 +5,7 @@
 #include "inicialize.c"
 #include "onUpdate.c"
 #include "nextBlock.c"
+#include "menu.c"
 
 
 int WIDTH = 490;
@@ -15,6 +16,8 @@ typedef struct positionsInWindow{
   int x1[7];
   int x2[7]; 
 } positions;
+
+
 
 
 
@@ -35,13 +38,14 @@ void closeGame(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY
 
 int main(int argc, char *argv[])
 {
+  int startGame = 0;
   static int d[7][7] = {{0, 0, 0, 0, 0, 0, 0},
                         {0, 0, 0, 0, 0, 0, 0},
                         {0, 0, 0, 0, 0, 0, 0},
                         {0, 0, 0, 0, 0, 0, 0},
                         {0, 0, 0, 0,  16, 0, 0},
-                        {16, 2, 2, 16, 8, 4, 2},
-                        {8,  2, 4,  8, 2, 8, 4},};
+                        {16, 0, 2, 16, 8, 4, 2},
+                        {8,  0, 4,  8, 2, 8, 4},};
 
   positions pos;
   pos.posCurrent = 0;
@@ -54,7 +58,7 @@ int main(int argc, char *argv[])
 
   if(inicialize()) return -1;
 
-
+  ALLEGRO_USTR *input = al_ustr_new("");
   ALLEGRO_TIMER* timer = al_create_timer(1.0 / 30.0);
   
   ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
@@ -76,9 +80,22 @@ int main(int argc, char *argv[])
   //int a = nextBlock(matrix);
 
   //fillPos
+
   while(1){
+    int returnMenu = (menu(queue, timer, disp, event,redraw, font, input));
+    if(returnMenu == 1){
+      startGame = 0;
+      break;
+    }else if(returnMenu == 0 ){
+      startGame = 1;
+      break;
+    }
+  
+   
+  }
+  while(1){
+    if(!startGame) break;
     if(onUpdate(queue, timer, disp, event,redraw, font, &pos, d)) break;
-    
   }
 
   closeGame(queue, timer, disp, font);

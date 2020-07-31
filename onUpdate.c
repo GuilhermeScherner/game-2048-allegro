@@ -4,8 +4,6 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
 
-extern int WIDTH;
-extern int HEIGHT;
 
 typedef struct positionsUpdate{
   int posCurrent;
@@ -14,6 +12,12 @@ typedef struct positionsUpdate{
 } PosUpdate;
 
 
+extern int WIDTH;
+extern int HEIGHT;
+
+int y11[7] = {70, 140, 210, 280, 350, 420, 480};
+int y2[7] = {140, 210, 280, 350, 420, 480, 560};
+
 int a = 0;
 int b = 60;
 
@@ -21,17 +25,20 @@ int x1 = 5;
 int x2 = 65;
 char snum[10];
 
-void drawnBlock(int *matrix){
-    al_clear_to_color(al_map_rgb(20,20,20));
+void drawnBlock(int *matrix, PosUpdate *posUpdate){
+
+  al_clear_to_color(al_map_rgb(20,20,20));
   al_draw_filled_rectangle(0, 0, 70, 560, al_map_rgba_f(.2, .2, .2, 1));
   al_draw_filled_rectangle(140, 0, 210, 560, al_map_rgba_f(.2, .2, .2, 1));
   al_draw_filled_rectangle(280, 0, 350, 560, al_map_rgba_f(.2, .2, .2, 1));
   al_draw_filled_rectangle(420, 0, 490, 560, al_map_rgba_f(.2, .2, .2, 1));
   al_draw_filled_rectangle(x1, a, x2, b, al_map_rgba_f(1, 1, 0.5, 1));
-  for (int i = 0; i < 7; i++){
-      for(int j=i*7; j<(i*7)+7; j++){
-        
+  for (int k = 1, i = 0; i < 43; i+=7, k++){
+    for(int j=0; j<7; j++){
+      if(*(matrix+(i+j)) != 0){
+        al_draw_filled_rectangle(posUpdate->x1[j]+5, k*70+5,  posUpdate->x2[j]-4, 70+k*70-4, al_map_rgba_f(1, 1, 0.5, 1));
       }
+    }
   }
 }
 
@@ -41,11 +48,11 @@ int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* 
     
     PosUpdate *posUpdate = pos; 
 
-  drawnBlock(matrix);
+  drawnBlock(matrix, posUpdate);
    al_draw_text(font, al_map_rgb(255,255,255), 0,0,0, snum);
   al_flip_display();
 
-  if(b < 558){
+  if(b < 556){
     a = a + 1;
     b = b + 1;
   }
