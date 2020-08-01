@@ -49,7 +49,7 @@ int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* 
   drawnBlock(matrix, posUpdate);
   al_flip_display();
 
-  if(b < 556){
+  if(b < PositionLastBock(matrix, posUpdate->posCurrent)-5){
     a = a + 1;
     b = b + 1;
   }
@@ -88,9 +88,11 @@ int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* 
       else if(event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
         for(int i=0; i<7; i++){
           if(event.mouse.x > posUpdate->x1[i] && event.mouse.x < posUpdate->x2[i]){
-            x1 = posUpdate->x1[i]+5;
-            x2 = posUpdate->x2[i]-4;
-            posUpdate->posCurrent = i;
+            if(DropBlock(matrix, i, b, 0)){
+              x1 = posUpdate->x1[i]+5;
+              x2 = posUpdate->x2[i]-4;
+              posUpdate->posCurrent = i;
+            }
           }
         }
       }
