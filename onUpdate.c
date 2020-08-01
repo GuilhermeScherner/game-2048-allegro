@@ -3,6 +3,7 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
+#include "DropBlock.c"
 
 
 typedef struct positionsUpdate{
@@ -12,18 +13,13 @@ typedef struct positionsUpdate{
 } PosUpdate;
 
 
-extern int WIDTH;
-extern int HEIGHT;
-
-int y11[7] = {70, 140, 210, 280, 350, 420, 480};
-int y2[7] = {140, 210, 280, 350, 420, 480, 560};
 
 int a = 0;
 int b = 60;
 
 int x1 = 5;
 int x2 = 65;
-char snum[10];
+
 
 void drawnBlock(int *matrix, PosUpdate *posUpdate){
 
@@ -43,13 +39,14 @@ void drawnBlock(int *matrix, PosUpdate *posUpdate){
 }
 
 
+
+
 int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* disp, 
               ALLEGRO_EVENT event, ALLEGRO_FONT* font, PosUpdate *pos, int *matrix){
     
     PosUpdate *posUpdate = pos; 
 
   drawnBlock(matrix, posUpdate);
-   al_draw_text(font, al_map_rgb(255,255,255), 0,0,0, snum);
   al_flip_display();
 
   if(b < 556){
@@ -65,42 +62,38 @@ int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* 
     }
     else if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
       return 1;
-    else if(event.type == ALLEGRO_EVENT_MOUSE_AXES){    
-      sprintf(snum, "%d", event.mouse.y);
-    }
     else if(event.type == ALLEGRO_EVENT_KEY_DOWN){
-      switch (event.keyboard.keycode)
-      {
-      case (ALLEGRO_KEY_DOWN):
-        break;
-      case (ALLEGRO_KEY_RIGHT):
-          if(posUpdate->posCurrent < 6){
-            posUpdate->posCurrent++;
-            x1 = posUpdate->x1[posUpdate->posCurrent]+5;
-            x2 = posUpdate->x2[posUpdate->posCurrent]-4;
-          }
-        break;
-      case (ALLEGRO_KEY_LEFT):
-          if(posUpdate->posCurrent > 0){
-            posUpdate->posCurrent--;
-            x1 = posUpdate->x1[posUpdate->posCurrent]+5;
-            x2 = posUpdate->x2[posUpdate->posCurrent]-4;
-            
-          }
-        break;
-      default:
-        break;
-      }
-    }
-    else if(event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-      for(int i=0; i<7; i++){
-        if(event.mouse.x > posUpdate->x1[i] && event.mouse.x < posUpdate->x2[i]){
-          x1 = posUpdate->x1[i]+5;
-          x2 = posUpdate->x2[i]-4;
-          posUpdate->posCurrent = i;
+        switch (event.keyboard.keycode)
+        {
+          case (ALLEGRO_KEY_DOWN):
+            break;
+          case (ALLEGRO_KEY_RIGHT):
+            if(posUpdate->posCurrent < 6 && DropBlock(matrix, posUpdate->posCurrent, b, 1)){
+              posUpdate->posCurrent++;
+              x1 = posUpdate->x1[posUpdate->posCurrent]+5;
+              x2 = posUpdate->x2[posUpdate->posCurrent]-4;
+            }
+            break;
+          case (ALLEGRO_KEY_LEFT):
+            if(posUpdate->posCurrent > 0 && DropBlock(matrix, posUpdate->posCurrent, b, -1)){
+              posUpdate->posCurrent--;
+              x1 = posUpdate->x1[posUpdate->posCurrent]+5;
+              x2 = posUpdate->x2[posUpdate->posCurrent]-4;
+            }
+            break;
+          default:
+            break;
         }
       }
-    }
+      else if(event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
+        for(int i=0; i<7; i++){
+          if(event.mouse.x > posUpdate->x1[i] && event.mouse.x < posUpdate->x2[i]){
+            x1 = posUpdate->x1[i]+5;
+            x2 = posUpdate->x2[i]-4;
+            posUpdate->posCurrent = i;
+          }
+        }
+      }
   }
 
 return 0;
