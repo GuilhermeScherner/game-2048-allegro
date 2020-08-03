@@ -4,6 +4,7 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
 #include "DropBlock.c"
+#include "joinBlock.c"
 
 
 typedef struct positionsUpdate{
@@ -12,25 +13,16 @@ typedef struct positionsUpdate{
   int x2[7]; 
 } PosUpdate;
 
-int a = 0;
-int b = 60;
-
-int x1 = 5;
-int x2 = 65;
-
-
-
 
 void drawnBlock(int *matrix, PosUpdate *posUpdate, ALLEGRO_FONT* font, int value, int *positionYX){
-  //char *string = atol(value);
   char *str;
   asprintf (&str, "%d", value);
   
   al_clear_to_color(al_map_rgb(20,20,20));
-  al_draw_filled_rectangle(0, 0, 70, 560, al_map_rgba_f(.2, .2, .2, 1));
-  al_draw_filled_rectangle(140, 0, 210, 560, al_map_rgba_f(.2, .2, .2, 1));
-  al_draw_filled_rectangle(280, 0, 350, 560, al_map_rgba_f(.2, .2, .2, 1));
-  al_draw_filled_rectangle(420, 0, 490, 560, al_map_rgba_f(.2, .2, .2, 1));
+  al_draw_filled_rectangle(0, 70, 70, 560, al_map_rgba_f(.2, .2, .2, 1));
+  al_draw_filled_rectangle(140, 70, 210, 560, al_map_rgba_f(.2, .2, .2, 1));
+  al_draw_filled_rectangle(280, 70, 350, 560, al_map_rgba_f(.2, .2, .2, 1));
+  al_draw_filled_rectangle(420, 70, 490, 560, al_map_rgba_f(.2, .2, .2, 1));
   al_draw_filled_rectangle(*(positionYX+2), *(positionYX), *(positionYX+3), *(positionYX+1), al_map_rgba_f(1, 1, 0.5, 1));
   al_draw_text(font, al_map_rgb(0,0,0), *(positionYX+2)+30, *(positionYX)+30, ALLEGRO_ALIGN_CENTRE, str);
   
@@ -69,9 +61,11 @@ int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* 
     
   PosUpdate *posUpdate = pos; 
 
-  if(isFirst(matrix) && reset==1){
+  printf("%d\n", fstBlock);
+
+  if(isFirst(matrix)){
     drawnBlock(matrix, posUpdate , font, fstBlock, positionYX);
-  }   else{
+  }else{
     drawnBlock(matrix, posUpdate , font, next, positionYX);
 
   }
@@ -86,6 +80,7 @@ int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* 
     *(positionYX) = *(positionYX+1) - 60;
     int a = isFirst(matrix) ? fstBlock : next;
     *(matrix+(((*(positionYX)-5)/70)-1)*7+(posUpdate->posCurrent)) = a;
+    joinBlock(matrix);
     return 2;
   }
 

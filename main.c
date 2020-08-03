@@ -42,13 +42,22 @@ void closeGame(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY
 int main(int argc, char *argv[])
 {
   enum state stateCurrent = Menu;
-  static int d[7][7] = {{0, 0, 0, 0, 0, 0, 0},
+  static int e[7][7] = {{0, 0, 0, 0, 0, 0, 0},
                         {0, 0, 0, 0, 0, 0, 0},
                         {0, 0, 0, 0, 0, 0, 0},
                         {0, 0, 0, 0, 0, 0, 0},
                         {0, 0, 0, 0,  16, 0, 0},
                         {16, 0, 2, 16, 8, 4, 2},
-                        {8,  0, 4,  8, 2, 8, 4},};
+                        {8,  0, 4,  8, 2, 8, 4}};
+  
+  static int d[7][7] = {{0, 0, 0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0, 0, 0},
+                        {0, 0, 0, 0, 0, 0, 0},
+                        {0, 0, 0, 0,  0, 0, 0},
+                        {0, 0, 0, 0, 0, 0, 0},
+                        {0,  0, 0,  0, 0, 0, 0}};
+
 
   positions pos;
   pos.posCurrent = 0;
@@ -142,6 +151,7 @@ int main(int argc, char *argv[])
       positionYX[1] = 60;
       positionYX[2] = 5;
       positionYX[3] = 65;
+      pos.posCurrent = 0;
     }else{
       reset = 0;
     }

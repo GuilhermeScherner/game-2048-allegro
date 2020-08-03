@@ -43,7 +43,8 @@ void sumBlock(int *matrix, int equals[3], int numOpe, int pos){
   
 }
 
-int joinBlock(int *matrix){
+void joinBlock(int *matrix){
+
   int redefine = false;
   int equals[3] ={0,0,0};
   int numOpe = 0;
@@ -53,97 +54,98 @@ int joinBlock(int *matrix){
         memset(equals, 0, sizeof equals);
         numOpe = 0;
         if(*(matrix+(j)) == 0) continue;
+//line top
         if(i==0){
-          if(j==i*7){
-            if(*(matrix+(j)) == *(matrix+(j+1))){
-              equals[numOpe] = 1;
-              numOpe ++;
-            }
-          }
-          if(j==(i*7)+6){
-            if(*(matrix+(j)) == *(matrix+(j-1))){
-              equals[numOpe] = -1;
-              numOpe ++;
-            }
-          }
           if(*(matrix+(j)) == *(matrix+(j+7))){
-            equals[numOpe] = +7;
+            equals[numOpe] = 7;
             numOpe ++;
           }
-        }
-
-
-
-        else if(i==6){
-          if(j==i*7){
+          if(j == 0){
             if(*(matrix+(j)) == *(matrix+(j+1))){
               equals[numOpe] = 1;
               numOpe ++;
             }
           }
-          if(j==(i*7)+6){
+          else if(j==6){
             if(*(matrix+(j)) == *(matrix+(j-1))){
               equals[numOpe] = -1;
               numOpe ++;
             }
           }
+          else if(j!= 0 && j !=6){
+            if(*(matrix+(j)) == *(matrix+(j+1))){
+              equals[numOpe] = 1;
+              numOpe ++;
+            }
+            if(*(matrix+(j)) == *(matrix+(j-1))){
+              equals[numOpe] = -1;
+              numOpe ++;
+            }
+          }
+        }
+//line bot
+        else if(i==6){
           if(*(matrix+(j)) == *(matrix+(j-7))){
             equals[numOpe] = -7;
             numOpe ++;
           }
+          if(j == 35){
+            if(*(matrix+(j)) == *(matrix+(j+1))){
+              equals[numOpe] = 1;
+              numOpe ++;
+            }
+          }
+          else if(j==42){
+            if(*(matrix+(j)) == *(matrix+(j-1))){
+              equals[numOpe] = -1;
+              numOpe ++;
+            }
+          }
+          else if(j!= 35 && j != 42){
+            if(*(matrix+(j)) == *(matrix+(j+1))){
+              equals[numOpe] = 1;
+              numOpe ++;
+            }
+            if(*(matrix+(j)) == *(matrix+(j-1))){
+              equals[numOpe] = -1;
+              numOpe ++;
+            }
+          }
         }
-
-
+//another line
         else{
+        if(*(matrix+(j)) == *(matrix+(j+7))){
+            equals[numOpe] = +7;
+            numOpe ++;
+          }
+          if(*(matrix+(j)) == *(matrix+(j-7))){
+              equals[numOpe] = -7;
+              numOpe ++;
+          }
           if(j==(i*7)){
             if(*(matrix+(j)) == *(matrix+(j+1))){
               equals[numOpe] = +1;
               numOpe ++;
-            } 
-            if(*(matrix+(j)) == *(matrix+(j+7))){
-              equals[numOpe] = +7;
-              numOpe ++;
-            }
-            if(*(matrix+(j)) == *(matrix+(j-7))){
-              equals[numOpe] = -7;
-              numOpe ++;
             }
           }
-
-
           else if(j==(i*7)+6){
             if(*(matrix+(j)) == *(matrix+(j-1))){
               equals[numOpe] = -1;
               numOpe ++;
-            } 
-            if(*(matrix+(j)) == *(matrix+(j+7))){
-              equals[numOpe] = +7;
-              numOpe ++;
-            }
-            if(*(matrix+(j)) == *(matrix+(j-7))){
-              equals[numOpe] = -7;
-              numOpe ++;
             }
           }
-          else{
+          else if(j!=(i*7) && j!=(i*7)+6){
             if(*(matrix+(j)) == *(matrix+(j+1))){
               equals[numOpe] = +1;
-              numOpe ++;
-            } 
-            if(*(matrix+(j)) == *(matrix+(j-7))){
-              equals[numOpe] = -7;
               numOpe ++;
             }
             if(*(matrix+(j)) == *(matrix+(j-1))){
               equals[numOpe] = -1;
               numOpe ++;
-            }
-            if(*(matrix+(j)) == *(matrix+(j+7))){
-              equals[numOpe] = +7;
-              numOpe ++;
-            }
+            }   
           }
         }
+
         if(numOpe > 0){
           sumBlock(matrix, equals, numOpe, j);
           redefine = true;

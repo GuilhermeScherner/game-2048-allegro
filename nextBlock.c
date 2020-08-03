@@ -29,6 +29,12 @@ int checkPowerofTwo(int x)
    }
    return 1;
 }
+int frstnext(int *matrix){
+    int value = 0;
+    value = rand() % 33; 
+    if(checkPowerofTwo(value)) return value;  
+    else frstnext(matrix);  
+}
 
 int nextBlock(int matrix[7][7]){
     int maior = 0;
@@ -41,11 +47,12 @@ int nextBlock(int matrix[7][7]){
             }
         }
     }
-
+ 
     if(maior == 0){
-        blockValue = rand() % 33; 
-        if(checkPowerofTwo(blockValue)) return blockValue;  
+        blockValue = frstnext(matrix);
+        return blockValue;
     }
+
     
     
     else{
