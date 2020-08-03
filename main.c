@@ -57,6 +57,7 @@ int main(int argc, char *argv[])
     pos.x1[i] = (WIDTH/7)*i;
     pos.x2[i] = (WIDTH/7)*i+69;
   }
+
   
 
   if(inicialize()) return -1;
@@ -78,7 +79,7 @@ int main(int argc, char *argv[])
 
   al_start_timer(timer);
 
-  //int a = nextBlock(matrix);
+
 
   //fillPos
 
@@ -121,9 +122,30 @@ int main(int argc, char *argv[])
     }
     
   }
+  
+  int fstBlock = nextBlock(d);
+  int next = nextBlock(d);
+  int reset = 1;
+  //int y1 = 0, y2 = 60, x1 = 5, x2 = 65;
+  //int a = 0,  b = 60, x1 = 5,  x2 = 65;
+  static int positionYX[4] = {0, 60, 5, 65};
   while(1){
     if(stateCurrent != Game) break;
-    if(onUpdate(queue, timer, disp, event, font, &pos, d)) break;
+   
+    int returnUpdate = onUpdate(queue, timer, disp, event, font, &pos, d, fstBlock, next, reset, positionYX);
+
+    if(returnUpdate == 1) break;
+    else if(returnUpdate == 2){
+      next = nextBlock(d); 
+      reset = 1;
+      positionYX[0] = 0;
+      positionYX[1] = 60;
+      positionYX[2] = 5;
+      positionYX[3] = 65;
+    }else{
+      reset = 0;
+    }
+      
   }
 
   closeGame(queue, timer, disp, font);

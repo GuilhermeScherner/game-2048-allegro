@@ -43,16 +43,15 @@ int nextBlock(int matrix[7][7]){
     }
 
     if(maior == 0){
-        blockValue = rand() % 17; 
+        blockValue = rand() % 33; 
         if(checkPowerofTwo(blockValue)) return blockValue;  
     }
     
     
     else{
         int exp = expoOpe(maior);
-        exp = exp - 2;
+        exp = exp - 1;
         int value  = pow(2, exp);
-
         srand(time(0));
         while(1){
             blockValue = rand() % value+1; 
