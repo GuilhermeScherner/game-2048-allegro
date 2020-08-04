@@ -39,6 +39,7 @@ int frstnext(int *matrix){
 int nextBlock(int matrix[7][7]){
     int maior = 0;
     int blockValue;
+    srand(time(0));
 
     for (int i = 0; i < 7; i++){
         for(int j=0; j<7; j++){
@@ -59,7 +60,6 @@ int nextBlock(int matrix[7][7]){
         int exp = expoOpe(maior);
         exp = exp - 1;
         int value  = pow(2, exp);
-        srand(time(0));
         while(1){
             blockValue = rand() % value+1; 
             if(checkPowerofTwo(blockValue)) break;  

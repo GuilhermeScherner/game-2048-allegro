@@ -22,6 +22,7 @@ typedef struct positionsInWindow{
 
 
 enum state{Menu, Game, Help, Rank};
+enum game{Play, Paused, Finish};
 
 
 void registerEvents(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* disp){
@@ -42,6 +43,7 @@ void closeGame(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY
 int main(int argc, char *argv[])
 {
   enum state stateCurrent = Menu;
+  enum game stateGame;
   static int e[7][7] = {{0, 0, 0, 0, 0, 0, 0},
                         {0, 0, 0, 0, 0, 0, 0},
                         {0, 0, 0, 0, 0, 0, 0},
@@ -90,8 +92,6 @@ int main(int argc, char *argv[])
 
 
 
-  //fillPos
-
   while(1){
     if(stateCurrent == Menu){
       
@@ -99,6 +99,7 @@ int main(int argc, char *argv[])
        
       if(returnMenu == 0){
         stateCurrent = Game;
+        stateGame = Play;
         break;
       }
       else if(returnMenu == 2){
@@ -131,29 +132,38 @@ int main(int argc, char *argv[])
     }
     
   }
-  
   int fstBlock = nextBlock(d);
   int next = nextBlock(d);
-  int reset = 1;
-  //int y1 = 0, y2 = 60, x1 = 5, x2 = 65;
-  //int a = 0,  b = 60, x1 = 5,  x2 = 65;
   static int positionYX[4] = {0, 60, 5, 65};
+  
   while(1){
     if(stateCurrent != Game) break;
+    int isPaused = (stateGame == Paused) ? 1 : 0;
    
-    int returnUpdate = onUpdate(queue, timer, disp, event, font, &pos, d, fstBlock, next, reset, positionYX);
+    int returnUpdate = onUpdate(queue, timer, disp, event, font, &pos, d, fstBlock, next, positionYX, isPaused);
 
-    if(returnUpdate == 1) break;
-    else if(returnUpdate == 2){
-      next = nextBlock(d); 
-      reset = 1;
-      positionYX[0] = 0;
-      positionYX[1] = 60;
-      positionYX[2] = 5;
-      positionYX[3] = 65;
-      pos.posCurrent = 0;
-    }else{
-      reset = 0;
+    if(returnUpdate==4){
+        stateGame = Play;
+       
+      }
+
+    if(stateGame == Play || returnUpdate == 1){
+
+      if(returnUpdate == 1) break;
+      
+      else if(returnUpdate == 2){
+        next = nextBlock(d); 
+        positionYX[0] = 0;
+        positionYX[1] = 60;
+        positionYX[2] = 5;
+        positionYX[3] = 65;
+        pos.posCurrent = 0;
+      }
+      else if(returnUpdate==3){
+        stateGame = Paused;
+      }
+
+
     }
       
   }
