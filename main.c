@@ -135,12 +135,14 @@ int main(int argc, char *argv[])
   int current = nextBlock(d);
   static int positionYX[4] = {0, 60, 5, 65};
   int next = nextBlock(d);
-  int reset = 1;
+  int score = 0;
+  int *pointerScore;
+  pointerScore = &score;
   while(1){
     if(stateCurrent != Game) break;
     int isPaused = (stateGame == Paused) ? 1 : 0;
    
-    int returnUpdate = onUpdate(queue, timer, disp, event, font, &pos, d, next, positionYX, isPaused, current);
+    int returnUpdate = onUpdate(queue, timer, disp, event, font, &pos, d, next, positionYX, isPaused, current, pointerScore);
 
     if(returnUpdate==4) stateGame = Play;
 
