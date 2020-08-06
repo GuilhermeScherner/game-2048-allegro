@@ -132,40 +132,35 @@ int main(int argc, char *argv[])
     }
     
   }
-  int fstBlock = nextBlock(d);
-  int next = nextBlock(d);
+  int current = nextBlock(d);
   static int positionYX[4] = {0, 60, 5, 65};
-  
+  int next = nextBlock(d);
+  int reset = 1;
   while(1){
     if(stateCurrent != Game) break;
     int isPaused = (stateGame == Paused) ? 1 : 0;
    
-    int returnUpdate = onUpdate(queue, timer, disp, event, font, &pos, d, fstBlock, next, positionYX, isPaused);
+    int returnUpdate = onUpdate(queue, timer, disp, event, font, &pos, d, next, positionYX, isPaused, current);
 
-    if(returnUpdate==4){
-        stateGame = Play;
-       
-      }
+    if(returnUpdate==4) stateGame = Play;
 
     if(stateGame == Play || returnUpdate == 1){
 
       if(returnUpdate == 1) break;
       
       else if(returnUpdate == 2){
-        next = nextBlock(d); 
+        current = next;
+        next = nextBlock(d);
         positionYX[0] = 0;
         positionYX[1] = 60;
         positionYX[2] = 5;
         positionYX[3] = 65;
         pos.posCurrent = 0;
       }
-      else if(returnUpdate==3){
-        stateGame = Paused;
-      }
 
-
-    }
+      else if(returnUpdate==3) stateGame = Paused;
       
+    }
   }
 
   closeGame(queue, timer, disp, font);

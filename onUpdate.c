@@ -5,13 +5,14 @@
 #include <allegro5/allegro_primitives.h>
 #include "DropBlock.c"
 #include "joinBlock.c"
-
+#include <math.h>
 
 typedef struct positionsUpdate{
   int posCurrent;
   int x1[7];
   int x2[7]; 
 } PosUpdate;
+
 
 
 int gamePaused(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_EVENT event, ALLEGRO_FONT* font){
@@ -38,11 +39,13 @@ int gamePaused(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_EVENT event, ALLEGRO_FONT* fo
     return 0; 
 }
 
-void drawnBlock(int *matrix, PosUpdate *posUpdate, ALLEGRO_FONT* font, int value, int *positionYX){
+void drawnBlock(int *matrix, PosUpdate *posUpdate, ALLEGRO_FONT* font, int value, int *positionYX, int current){
   char *str;
   asprintf (&str, "%d", value);
   
-  al_clear_to_color(al_map_rgb(20,20,20));
+  al_clear_to_color(al_map_rgb(0,0,0));
+  al_draw_filled_rectangle(200, 5, 250, 55, al_map_rgba_f(.9, .9, .9, 1));
+  al_draw_text(font, al_map_rgb(0,0,0), 225, 27, ALLEGRO_ALIGN_CENTRE, str);
   al_draw_filled_rectangle(0, 70, 70, 560, al_map_rgba_f(.2, .2, .2, 1));
   al_draw_filled_rectangle(140, 70, 210, 560, al_map_rgba_f(.2, .2, .2, 1));
   al_draw_filled_rectangle(280, 70, 350, 560, al_map_rgba_f(.2, .2, .2, 1));
@@ -50,6 +53,10 @@ void drawnBlock(int *matrix, PosUpdate *posUpdate, ALLEGRO_FONT* font, int value
   al_draw_rectangle(400, 10, 450, 40, al_map_rgba_f(.9, .9, .9, 1),0);
   al_draw_text(font, al_map_rgb(255,255,255), 425, 20, ALLEGRO_ALIGN_CENTRE, "||");
   al_draw_filled_rectangle(*(positionYX+2), *(positionYX), *(positionYX+3), *(positionYX+1), al_map_rgba_f(1, 1, 0.5, 1));
+  
+  free(str);
+  
+  asprintf (&str, "%d", current);
   al_draw_text(font, al_map_rgb(0,0,0), *(positionYX+2)+30, *(positionYX)+30, ALLEGRO_ALIGN_CENTRE, str);
   
   free(str);
@@ -78,40 +85,57 @@ int isFirst(int *matrix){
 }
 
 
+int speedBlock(int *matrix){
+  int maior = 0;
+  for (int i = 0; i < 7; i++){
+    for(int j=i*7; j<(i*7)+7; j++){
+      if(*(matrix+(j)) > maior){
+        maior = *(matrix+(j));
+      }
+    }
+  }
+
+  int exp = sqrt(maior);
+
+  int speed = (exp/7)+1;
+  return speed;
+}
+
+
+int *colorBlock(){
+
+}
 
 
 int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* disp, 
               ALLEGRO_EVENT event, ALLEGRO_FONT* font, PosUpdate *pos, int *matrix, 
-              int fstBlock, int next, int *positionYX, int isPaused){
+              int next, int *positionYX, int isPaused, int current){
+  
+
 
   if(isPaused){
-    int aa = gamePaused(queue, event, font);
-    if(aa == 1) return 1;
-    if(aa == 2) return 4;
+    int paused = gamePaused(queue, event, font);
+    if(paused == 1) return 1;
+    if(paused == 2) return 4;
     return 0;
   }
 
+  //if(se a linha do poscurrent nao tiver mais espaço e o ultimo bloco for diferente do bloco current )
     
   PosUpdate *posUpdate = pos; 
 
-
-  if(isFirst(matrix)){
-    drawnBlock(matrix, posUpdate , font, fstBlock, positionYX);
-  }else{
-    drawnBlock(matrix, posUpdate , font, next, positionYX);
-
-  }
+  drawnBlock(matrix, posUpdate, font, next, positionYX, current);
 
   al_flip_display();
 
   if(*(positionYX+1) < PositionLastBock(matrix, posUpdate->posCurrent)-5){
-    *(positionYX) = *(positionYX) + 1;
-    *(positionYX+1) = *(positionYX+1) + 1;
+    int speed = speedBlock(matrix);
+    *(positionYX) = *(positionYX) + speed;
+    *(positionYX+1) = *(positionYX+1) + speed;
   }else{
     *(positionYX+1)  = PositionLastBock(matrix, posUpdate->posCurrent)-5;
     *(positionYX) = *(positionYX+1) - 60;
-    int testFirstBlock = isFirst(matrix) ? fstBlock : next;
-    *(matrix+(((*(positionYX)-5)/70)-1)*7+(posUpdate->posCurrent)) = testFirstBlock;
+    *(matrix+(((*(positionYX)-5)/70)-1)*7+(posUpdate->posCurrent)) = current;
     joinBlock(matrix);
     return 2;
   }
