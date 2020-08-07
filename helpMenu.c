@@ -4,7 +4,7 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
 
-int help(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* disp, 
+int help(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_DISPLAY* disp, 
               ALLEGRO_EVENT event, ALLEGRO_FONT* font){
 
     

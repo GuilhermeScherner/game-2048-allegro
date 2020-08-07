@@ -4,7 +4,7 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
 
-int menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* disp, 
+int menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_DISPLAY* disp, 
               ALLEGRO_EVENT event, ALLEGRO_FONT* font, ALLEGRO_USTR* input){
 
     

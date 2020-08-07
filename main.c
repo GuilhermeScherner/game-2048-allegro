@@ -2,12 +2,14 @@
 #include <stdlib.h>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_font.h>
+#include <time.h>
 #include "inicialize.c"
 #include "onUpdate.c"
 #include "nextBlock.c"
 #include "menu.c"
 #include "helpMenu.c"
 #include "rankMenu.c"
+
 
 
 int WIDTH = 490;
@@ -25,18 +27,18 @@ enum state{Menu, Game, Help, Rank};
 enum game{Play, Paused, Finish};
 
 
-void registerEvents(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* disp){
+void registerEvents(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_DISPLAY* disp){
   al_register_event_source(queue, al_get_keyboard_event_source());
   al_register_event_source(queue, al_get_mouse_event_source());
   al_register_event_source(queue, al_get_display_event_source(disp));
-  al_register_event_source(queue, al_get_timer_event_source(timer));
+
+
 }
 
 
-void closeGame(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* disp, ALLEGRO_FONT* font){
+void closeGame(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_DISPLAY* disp, ALLEGRO_FONT* font){
   al_destroy_font(font);
   al_destroy_display(disp);
-  al_destroy_timer(timer);
   al_destroy_event_queue(queue);
 }
 
@@ -74,7 +76,6 @@ int main(int argc, char *argv[])
   if(inicialize()) return -1;
 
   ALLEGRO_USTR *input = al_ustr_new("");
-  ALLEGRO_TIMER* timer = al_create_timer(1.0 / 30.0);
   
   ALLEGRO_EVENT_QUEUE* queue = al_create_event_queue();
   
@@ -83,19 +84,17 @@ int main(int argc, char *argv[])
   ALLEGRO_FONT* font = al_create_builtin_font();
   
 
-  registerEvents(queue, timer, disp);
+  registerEvents(queue, disp);
 
   
   ALLEGRO_EVENT event;
-
-  al_start_timer(timer);
 
 
 
   while(1){
     if(stateCurrent == Menu){
       
-      int returnMenu = (menu(queue, timer, disp, event, font, input));
+      int returnMenu = (menu(queue, disp, event, font, input));
        
       if(returnMenu == 0){
         stateCurrent = Game;
@@ -114,7 +113,7 @@ int main(int argc, char *argv[])
 
 
     else if(stateCurrent == Help){
-      int helpMenu = help(queue, timer, disp, event, font);
+      int helpMenu = help(queue, disp, event, font);
       if(helpMenu == 0){
         stateCurrent = Menu;
         continue;
@@ -123,7 +122,7 @@ int main(int argc, char *argv[])
     }
 
     else if(stateCurrent == Rank){
-      int rankMenu = rank(queue, timer, disp, event, font);
+      int rankMenu = rank(queue, disp, event, font);
       if(rankMenu == 0){
         stateCurrent = Menu;
         continue;
@@ -132,19 +131,37 @@ int main(int argc, char *argv[])
     }
     
   }
+
+
   int current = nextBlock(d);
-  static int positionYX[4] = {0, 60, 5, 65};
   int next = nextBlock(d);
+  
+  static int positionYX[4] = {0, 60, 5, 65};
+  
   int score = 0;
   int *pointerScore;
   pointerScore = &score;
+  
+  unsigned int countTime = 0;
+
+  time_t initTime = time(0);
+  time_t lastTime;
+
+  time_t initPause = 0;
+  time_t lastPause = 0;
+  int isPaused;
+  
   while(1){
     if(stateCurrent != Game) break;
-    int isPaused = (stateGame == Paused) ? 1 : 0;
+    isPaused = (stateGame == Paused) ? 1 : 0;
    
-    int returnUpdate = onUpdate(queue, timer, disp, event, font, &pos, d, next, positionYX, isPaused, current, pointerScore);
-
-    if(returnUpdate==4) stateGame = Play;
+    int returnUpdate = onUpdate(queue, disp, event, font, &pos, d, next, positionYX, isPaused, 
+                                current, pointerScore, countTime);
+    
+    if(returnUpdate==4){
+      lastPause = time(0);
+      stateGame = Play;
+    }
 
     if(stateGame == Play || returnUpdate == 1){
 
@@ -160,12 +177,17 @@ int main(int argc, char *argv[])
         pos.posCurrent = 0;
       }
 
-      else if(returnUpdate==3) stateGame = Paused;
-      
+      else if(returnUpdate==3) {
+        initPause = time(0);
+        stateGame = Paused;
+      }
+      lastTime = time(0);
+      countTime = (lastTime-initTime)-(lastPause-initPause);
+
     }
   }
 
-  closeGame(queue, timer, disp, font);
+  closeGame(queue, disp, font);
 
   return 0;
 }

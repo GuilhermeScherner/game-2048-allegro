@@ -15,7 +15,7 @@ typedef struct positionsUpdate{
 
 
 int gamePaused(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_EVENT event, ALLEGRO_FONT* font){
-              
+  
   al_draw_filled_rectangle(105, 200, 385, 400, al_map_rgba_f(.3, .3, .3, 1));
   al_draw_filled_rectangle(210, 300, 285, 325, al_map_rgba_f(.9, .9, .9, 1));
   al_draw_filled_rectangle(210, 350, 285, 375, al_map_rgba_f(.9, .9, .9, 1));
@@ -38,18 +38,26 @@ int gamePaused(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_EVENT event, ALLEGRO_FONT* fo
     return 0; 
 }
 
-void drawnBlock(int *matrix, PosUpdate *posUpdate, ALLEGRO_FONT* font, int value, int *positionYX, int current, int *score){
+void drawnBlock(int *matrix, PosUpdate *posUpdate, ALLEGRO_FONT* font, int value, int *positionYX, int current, 
+                int *score, unsigned int countTime){
   al_clear_to_color(al_map_rgb(0,0,0));
   char *str;
 
   asprintf (&str, "%d", *score);
-  al_draw_text(font, al_map_rgb(255,255,255), 45, 27, ALLEGRO_ALIGN_CENTRE, "Potuação: ");
-  al_draw_text(font, al_map_rgb(255,255,255), 130, 27, ALLEGRO_ALIGN_CENTRE, str);
+  al_draw_text(font, al_map_rgb(255,255,255), 45, 17, ALLEGRO_ALIGN_CENTRE, "Potuação: ");
+  al_draw_text(font, al_map_rgb(255,255,255), 90, 17, ALLEGRO_ALIGN_LEFT, str);
+  free(str);
+
+  asprintf (&str, "%d", countTime);
+  al_draw_text(font, al_map_rgb(255,255,255), 45, 37, ALLEGRO_ALIGN_CENTRE, "Time: ");
+  al_draw_text(font, al_map_rgb(255,255,255), 90, 37, ALLEGRO_ALIGN_LEFT, str);
   free(str);
 
   asprintf (&str, "%d", value);
-  al_draw_filled_rectangle(200, 5, 250, 55, al_map_rgba_f(.9, .9, .9, 1));
-  al_draw_text(font, al_map_rgb(0,0,0), 225, 27, ALLEGRO_ALIGN_CENTRE, str);
+  al_draw_filled_rectangle(220, 5, 270, 55, al_map_rgba_f(.9, .9, .9, 1));
+  al_draw_text(font, al_map_rgb(0,0,0), 245, 27, ALLEGRO_ALIGN_CENTRE, str);
+  free(str);
+
   al_draw_filled_rectangle(0, 70, 70, 560, al_map_rgba_f(.2, .2, .2, 1));
   al_draw_filled_rectangle(140, 70, 210, 560, al_map_rgba_f(.2, .2, .2, 1));
   al_draw_filled_rectangle(280, 70, 350, 560, al_map_rgba_f(.2, .2, .2, 1));
@@ -58,7 +66,6 @@ void drawnBlock(int *matrix, PosUpdate *posUpdate, ALLEGRO_FONT* font, int value
   al_draw_text(font, al_map_rgb(255,255,255), 425, 20, ALLEGRO_ALIGN_CENTRE, "||");
   al_draw_filled_rectangle(*(positionYX+2), *(positionYX), *(positionYX+3), *(positionYX+1), al_map_rgba_f(1, 1, 0.5, 1));
   
-  free(str);
   
   asprintf (&str, "%d", current);
   al_draw_text(font, al_map_rgb(0,0,0), *(positionYX+2)+30, *(positionYX)+30, ALLEGRO_ALIGN_CENTRE, str);
@@ -99,20 +106,19 @@ int speedBlock(int *matrix){
     }
   }
 
-  int exp = sqrt(maior);
+  int exp = log(maior)/log(2);
 
-  int speed = (exp/7)+1;
+  int speed = (exp/5)+1;
+
   return speed;
 }
 
 
 
-int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* disp, 
-              ALLEGRO_EVENT event, ALLEGRO_FONT* font, PosUpdate *pos, int *matrix, 
-              int next, int *positionYX, int isPaused, int current, int *score){
+int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_DISPLAY* disp, ALLEGRO_EVENT event,
+               ALLEGRO_FONT* font, PosUpdate *pos, int *matrix, int next, int *positionYX, 
+               int isPaused, int current, int *score, unsigned int countTime){
   
-  
-
   if(isPaused){
     int paused = gamePaused(queue, event, font);
     if(paused == 1) return 1;
@@ -120,12 +126,12 @@ int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* 
 
     return 0;
   }
+
   //if(se a linha do poscurrent nao tiver mais espaço e o ultimo bloco for diferente do bloco current )
-  int a = al_get_time();
-  printf("%d\n", a);
+
   PosUpdate *posUpdate = pos; 
 
-  drawnBlock(matrix, posUpdate, font, next, positionYX, current, score);
+  drawnBlock(matrix, posUpdate, font, next, positionYX, current, score, countTime);
 
   al_flip_display();
 
@@ -191,6 +197,8 @@ int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_TIMER* timer, ALLEGRO_DISPLAY* 
         }
       }
   }
+
+
 
 return 0;
 }
