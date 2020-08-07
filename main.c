@@ -9,7 +9,7 @@
 #include "menu.c"
 #include "helpMenu.c"
 #include "rankMenu.c"
-
+#include "pause.c"
 
 
 int WIDTH = 490;
@@ -133,10 +133,9 @@ int main(int argc, char *argv[])
   }
 
 
-  int current = nextBlock(d);
-  int next = nextBlock(d);
+  int current = nextBlock(d, -10);
+  int next = nextBlock(d, 0);
   
-  static int positionYX[4] = {0, 60, 5, 65};
   
   int score = 0;
   int *pointerScore;
@@ -149,42 +148,54 @@ int main(int argc, char *argv[])
 
   time_t initPause = 0;
   time_t lastPause = 0;
-  int isPaused;
+
+  int a = 0;
+  static int positionYX[4] = {0, 60, 5, 65};
   
   while(1){
-    if(stateCurrent != Game) break;
-    isPaused = (stateGame == Paused) ? 1 : 0;
-   
-    int returnUpdate = onUpdate(queue, disp, event, font, &pos, d, next, positionYX, isPaused, 
-                                current, pointerScore, countTime);
-    
-    if(returnUpdate==4){
-      lastPause = time(0);
-      stateGame = Play;
-    }
-
-    if(stateGame == Play || returnUpdate == 1){
-
-      if(returnUpdate == 1) break;
       
+    if(stateCurrent != Game) break;
+
+
+    if(stateGame == Paused){
+      int returnPuase = gamePaused(queue, event, font);
+      if(returnPuase == 1){
+        break;
+      }
+      else if(returnPuase == 2){
+        lastPause = time(0);
+        stateGame = Play;
+      }
+    }else{
+      
+      int returnUpdate = onUpdate(queue, disp, event, font, &pos, d, next, positionYX, 
+                                current, pointerScore, countTime);
+
+    
+      
+      if(returnUpdate == 1) break;
+    
       else if(returnUpdate == 2){
         current = next;
-        next = nextBlock(d);
+        next = nextBlock(d, 0);
         positionYX[0] = 0;
         positionYX[1] = 60;
         positionYX[2] = 5;
         positionYX[3] = 65;
         pos.posCurrent = 0;
       }
-
       else if(returnUpdate==3) {
         initPause = time(0);
         stateGame = Paused;
       }
+
       lastTime = time(0);
       countTime = (lastTime-initTime)-(lastPause-initPause);
 
     }
+    
+
+  
   }
 
   closeGame(queue, disp, font);

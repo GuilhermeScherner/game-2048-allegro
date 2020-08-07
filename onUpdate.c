@@ -13,34 +13,10 @@ typedef struct positionsUpdate{
   int x2[7]; 
 } PosUpdate;
 
-
-int gamePaused(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_EVENT event, ALLEGRO_FONT* font){
-  
-  al_draw_filled_rectangle(105, 200, 385, 400, al_map_rgba_f(.3, .3, .3, 1));
-  al_draw_filled_rectangle(210, 300, 285, 325, al_map_rgba_f(.9, .9, .9, 1));
-  al_draw_filled_rectangle(210, 350, 285, 375, al_map_rgba_f(.9, .9, .9, 1));
-  al_draw_text(font, al_map_rgb(255,255,255), 250, 230, ALLEGRO_ALIGN_CENTRE, "Game Paused");
-  al_draw_text(font, al_map_rgb(0,0,0), 250, 310, ALLEGRO_ALIGN_CENTRE, "Resume");
-  al_draw_text(font, al_map_rgb(0,0,0), 250, 360, ALLEGRO_ALIGN_CENTRE, "Restart");
-  al_flip_display(); 
-  
-  al_wait_for_event(queue, &event);
-
-  if(!al_is_event_queue_empty(queue)){
-    if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
-      return 1;
-    }if(event.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN){
-      if(event.mouse.y > 300 && event.mouse.y < 325 && event.mouse.x > 210 && event.mouse.x < 285){
-        return 2;
-      }
-    }
-  }
-    return 0; 
-}
-
 void drawnBlock(int *matrix, PosUpdate *posUpdate, ALLEGRO_FONT* font, int value, int *positionYX, int current, 
                 int *score, unsigned int countTime){
   al_clear_to_color(al_map_rgb(0,0,0));
+
   char *str;
 
   asprintf (&str, "%d", *score);
@@ -71,7 +47,7 @@ void drawnBlock(int *matrix, PosUpdate *posUpdate, ALLEGRO_FONT* font, int value
   al_draw_text(font, al_map_rgb(0,0,0), *(positionYX+2)+30, *(positionYX)+30, ALLEGRO_ALIGN_CENTRE, str);
   
   free(str);
-
+ 
   for (int k = 1, i = 0; i < 43; i+=7, k++){
     for(int j=0; j<7; j++){
       if(*(matrix+(i+j)) != 0){
@@ -82,17 +58,7 @@ void drawnBlock(int *matrix, PosUpdate *posUpdate, ALLEGRO_FONT* font, int value
       }
     }
   }
-}
 
-int isFirst(int *matrix){
-  for (int i = 0; i < 7; i++){
-    for(int j=i*7; j<(i*7)+7; j++){
-      if(*(matrix+(j)) > 0){
-        return 0;
-      }
-    }
-  }
-  return 1;
 }
 
 
@@ -105,10 +71,12 @@ int speedBlock(int *matrix){
       }
     }
   }
+  int exp = 1;
+  if(maior > 2)
+     exp = log(maior)/log(2);
 
-  int exp = log(maior)/log(2);
 
-  int speed = (exp/5)+1;
+  int speed = (exp/7)+1;
 
   return speed;
 }
@@ -117,16 +85,10 @@ int speedBlock(int *matrix){
 
 int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_DISPLAY* disp, ALLEGRO_EVENT event,
                ALLEGRO_FONT* font, PosUpdate *pos, int *matrix, int next, int *positionYX, 
-               int isPaused, int current, int *score, unsigned int countTime){
+               int current, int *score, unsigned int countTime){
   
-  if(isPaused){
-    int paused = gamePaused(queue, event, font);
-    if(paused == 1) return 1;
-    if(paused == 2) return 4;
 
-    return 0;
-  }
-
+  //printf("%d\n", aa);
   //if(se a linha do poscurrent nao tiver mais espaço e o ultimo bloco for diferente do bloco current )
 
   PosUpdate *posUpdate = pos; 
@@ -135,6 +97,7 @@ int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_DISPLAY* disp, ALLEGRO_EVENT ev
 
   al_flip_display();
 
+
   if(*(positionYX+1) < PositionLastBock(matrix, posUpdate->posCurrent)-5){
     int speed = speedBlock(matrix);
     *(positionYX) = *(positionYX) + speed;
@@ -142,9 +105,10 @@ int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_DISPLAY* disp, ALLEGRO_EVENT ev
   }else{
     *(positionYX+1)  = PositionLastBock(matrix, posUpdate->posCurrent)-5;
     *(positionYX) = *(positionYX+1) - 60;
-    *(matrix+(((*(positionYX)-5)/70)-1)*7+(posUpdate->posCurrent)) = current;
+    int posi = (((*(positionYX+1)+5)/70)-2)*7;
+     *(matrix+posi+(posUpdate->posCurrent)) = current;
     int row = *(positionYX+1) + 5;
-    joinBlock(matrix, posUpdate->posCurrent, row, score);
+    joinBlock(matrix, posUpdate->posCurrent, 42, score);
     return 2;
   }
 
@@ -197,6 +161,7 @@ int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_DISPLAY* disp, ALLEGRO_EVENT ev
         }
       }
   }
+  
 
 
 

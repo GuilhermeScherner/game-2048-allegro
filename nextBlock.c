@@ -39,15 +39,16 @@ int frstnext(int *matrix){
     return value;  
 }
 
-int nextBlock(int matrix[7][7]){
-    int maior = 0;
-    int blockValue;
-    srand(time(0));
+int nextBlock(int *matrix, int value){
 
-    for (int i = 0; i < 7; i++){
-        for(int j=0; j<7; j++){
-            if((matrix[i][j]) > maior){
-                maior = (matrix[i][j]);
+    int maior = 0;
+    int blockValue=2;
+    srand(time(0)+value);
+
+  for (int i = 0; i < 7; i++){
+    for(int j=i*7; j<(i*7)+7; j++){
+      if(*(matrix+(j)) > maior){
+        maior = *(matrix+(j));
             }
         }
     }
@@ -56,12 +57,18 @@ int nextBlock(int matrix[7][7]){
         blockValue = frstnext(matrix);
         return blockValue;
     }
-
-    
-    
+    else if(maior > 0 && maior < 32){
+        while(1){
+            blockValue = rand() % 32; 
+            if(checkPowerofTwo(blockValue)) break;  
+        }
+        
+        return blockValue;
+    }
     else{
         int exp = expoOpe(maior);
-        exp = exp - 1;
+        if(exp > 1)
+            exp = exp - 1;
         int value  = pow(2, exp);
         while(1){
             blockValue = rand() % value+1; 
@@ -70,5 +77,5 @@ int nextBlock(int matrix[7][7]){
         
         return blockValue;
     }
-    return 0;   
+    return blockValue;   
 }
