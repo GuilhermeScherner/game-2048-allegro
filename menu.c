@@ -4,12 +4,14 @@
 #include <allegro5/allegro_font.h>
 #include <allegro5/allegro_primitives.h>
 
+
 int menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_DISPLAY* disp, 
               ALLEGRO_EVENT event, ALLEGRO_FONT* font, ALLEGRO_USTR* input){
 
     
   al_clear_to_color(al_map_rgb(20,20,20));
-  al_draw_text(font, al_map_rgb(255,255,255), 250, 100,ALLEGRO_ALIGN_CENTRE, "Drop The Number");
+  al_draw_text(font, al_map_rgb(255,255,255), 250, 50,ALLEGRO_ALIGN_CENTRE, "Drop The Number");
+  al_draw_text(font, al_map_rgb(255,255,255), 130, 100,ALLEGRO_ALIGN_CENTRE, "Digite um nome:");
   al_draw_rectangle(200, 150, 300, 200, al_map_rgba_f(.2, .2, .2, 1), 0);
   al_draw_text(font, al_map_rgb(255,255,255), 250, 169,ALLEGRO_ALIGN_CENTRE, "Iniciar");
   al_draw_rectangle(200, 250, 300, 300, al_map_rgba_f(.2, .2, .2, 1), 0);
@@ -20,16 +22,17 @@ int menu(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_DISPLAY* disp,
   al_draw_text(font, al_map_rgb(255,255,255), 250, 469,ALLEGRO_ALIGN_CENTRE, "Sair");
 
 
-  al_draw_ustr(font, al_map_rgb(255,255,255), 30,10,0, input);
+  al_draw_ustr(font, al_map_rgb(255,255,255), 200,100,0, input);
   al_flip_display();
   if(!al_is_event_queue_empty(queue)){
     al_wait_for_event(queue, &event);
 
     if(event.type == ALLEGRO_EVENT_KEY_CHAR){
     int unichar = event.keyboard.unichar;
-
-    if(unichar >= 32 && unichar <= 126 && al_get_ustr_width(font, input) < 120)
+    if(unichar >= 32 && unichar <= 126 && al_ustr_size(input) < 15)
       al_ustr_append_chr(input, unichar);
+    else if(unichar == 8)
+      al_ustr_truncate(input, al_ustr_size(input)-1);
     }
     else if(event.type == ALLEGRO_EVENT_DISPLAY_CLOSE){
       return 1;

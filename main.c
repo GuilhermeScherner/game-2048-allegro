@@ -47,15 +47,9 @@ int main(int argc, char *argv[])
 {
   enum state stateCurrent = Menu;
   enum game stateGame;
-  static int e[7][7] = {{0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0, 0, 0, 0},
-                        {0, 0, 0, 0,  16, 0, 0},
-                        {16, 0, 2, 16, 8, 4, 2},
-                        {8,  0, 4,  8, 2, 8, 4}};
+
   
-  static int d[7][7] = {{0, 0, 0, 0, 0, 0, 0},
+  static int matrix[7][7] = {{0, 0, 0, 0, 0, 0, 0},
                         {0, 0, 0, 0, 0, 0, 0},
                         {0, 0, 0, 0, 0, 0, 0},
                         {0, 0, 0, 0, 0, 0, 0},
@@ -134,8 +128,8 @@ int main(int argc, char *argv[])
   }
 
 
-  int current = nextBlock(d, -10);
-  int next = nextBlock(d, 0);
+  int current = nextBlock(matrix, -10);
+  int next = nextBlock(matrix, 0);
   
   
   int score = 0;
@@ -170,7 +164,7 @@ int main(int argc, char *argv[])
         lastTime = 0;
         initPause = 0;
         lastPause = 0;
-        memset(d, 0, sizeof d);
+        memset(matrix, 0, sizeof matrix);
         score = 0;
         positionYX[0] = 0;
         positionYX[1] = 60;
@@ -182,7 +176,7 @@ int main(int argc, char *argv[])
       }
     }else if(stateGame == Play){
       
-      int returnUpdate = onUpdate(queue, disp, event, font, &pos, d, next, positionYX, 
+      int returnUpdate = onUpdate(queue, disp, event, font, &pos, matrix, next, positionYX, 
                                 current, pointerScore, countTime);
     
       if(returnUpdate == 1) break;
@@ -191,7 +185,7 @@ int main(int argc, char *argv[])
         if(positionYX[1] == 65)
           stateGame = Finish;
         current = next;
-        next = nextBlock(d, 0);
+        next = nextBlock(matrix, 0);
         positionYX[0] = 0;
         positionYX[1] = 60;
         positionYX[2] = 5;
