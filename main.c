@@ -149,7 +149,6 @@ int main(int argc, char *argv[])
   time_t initPause = 0;
   time_t lastPause = 0;
 
-  int a = 0;
   static int positionYX[4] = {0, 60, 5, 65};
   
   while(1){
@@ -164,6 +163,19 @@ int main(int argc, char *argv[])
       }
       else if(returnPuase == 2){
         lastPause = time(0);
+        stateGame = Play;
+      }else if(returnPuase == 3){
+        initTime = time(0);
+        lastTime = 0;
+        initPause = 0;
+        lastPause = 0;
+        memset(d, 0, sizeof d);
+        score = 0;
+        positionYX[0] = 0;
+        positionYX[1] = 60;
+        positionYX[2] = 5;
+        positionYX[3] = 65;
+        pos.posCurrent = 0;
         stateGame = Play;
       }
     }else{

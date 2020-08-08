@@ -22,6 +22,9 @@ int gamePaused(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_EVENT event, ALLEGRO_FONT* fo
       if(event.mouse.y > 300 && event.mouse.y < 325 && event.mouse.x > 210 && event.mouse.x < 285){
         return 2;
       }
+      if(event.mouse.y > 350 && event.mouse.y < 375 && event.mouse.x > 210 && event.mouse.x < 285){
+        return 3;
+      }
     }
   }
     return 0; 
