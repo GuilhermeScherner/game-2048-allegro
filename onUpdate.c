@@ -88,7 +88,6 @@ int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_DISPLAY* disp, ALLEGRO_EVENT ev
                int current, int *score, unsigned int countTime){
   
 
-  //printf("%d\n", aa);
   //if(se a linha do poscurrent nao tiver mais espaço e o ultimo bloco for diferente do bloco current )
 
   PosUpdate *posUpdate = pos; 

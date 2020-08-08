@@ -10,6 +10,7 @@
 #include "helpMenu.c"
 #include "rankMenu.c"
 #include "pause.c"
+#include "finishGame.c"
 
 
 int WIDTH = 490;
@@ -148,23 +149,23 @@ int main(int argc, char *argv[])
 
   time_t initPause = 0;
   time_t lastPause = 0;
-
   static int positionYX[4] = {0, 60, 5, 65};
-  
+  int returnPause = 0;
   while(1){
       
     if(stateCurrent != Game) break;
 
 
     if(stateGame == Paused){
-      int returnPuase = gamePaused(queue, event, font);
-      if(returnPuase == 1){
+      if(returnPause != 3)
+        returnPause = gamePaused(queue, event, font);
+      if(returnPause == 1){
         break;
       }
-      else if(returnPuase == 2){
+      else if(returnPause == 2){
         lastPause = time(0);
         stateGame = Play;
-      }else if(returnPuase == 3){
+      }else if(returnPause == 3){
         initTime = time(0);
         lastTime = 0;
         initPause = 0;
@@ -177,17 +178,18 @@ int main(int argc, char *argv[])
         positionYX[3] = 65;
         pos.posCurrent = 0;
         stateGame = Play;
+        returnPause = 0;
       }
-    }else{
+    }else if(stateGame == Play){
       
       int returnUpdate = onUpdate(queue, disp, event, font, &pos, d, next, positionYX, 
                                 current, pointerScore, countTime);
-
     
-      
       if(returnUpdate == 1) break;
     
       else if(returnUpdate == 2){
+        if(positionYX[1] == 65)
+          stateGame = Finish;
         current = next;
         next = nextBlock(d, 0);
         positionYX[0] = 0;
@@ -205,8 +207,17 @@ int main(int argc, char *argv[])
       countTime = (lastTime-initTime)-(lastPause-initPause);
 
     }
-    
+    else if(stateGame == Finish){
+      int finishMenu = finish(queue, disp, event, font);
 
+      if(finishMenu == 2){
+        returnPause = 3;
+        stateGame = Paused;
+      }
+      if(finishMenu == 1){
+        break;
+      }
+    }
   
   }
 
