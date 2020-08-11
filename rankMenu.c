@@ -9,8 +9,7 @@ int rank(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_DISPLAY* disp,
 
     
   al_clear_to_color(al_map_rgb(20,20,20));
-  al_draw_multiline_text(font, al_map_rgb(255,255,255), 250, 150, 300, 20, ALLEGRO_ALIGN_CENTRE, "D oidoasidosaidoasidoasidoasidoisaodiuse ou as setas"
-   "para controlar onde o bloco vai cair.");
+  al_draw_multiline_text(font, al_map_rgb(255,255,255), 250, 150, 300, 20, ALLEGRO_ALIGN_CENTRE, "O ranking :");
 
   al_draw_rectangle(50, 50, 150, 100, al_map_rgba_f(.2, .2, .2, 1), 0);
   al_draw_text(font, al_map_rgb(255,255,255), 100, 70, ALLEGRO_ALIGN_CENTRE, "Voltar");

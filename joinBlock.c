@@ -13,7 +13,7 @@ void redefineBlock(int *matrix){
       }
     }
   }  
-  return;
+
 }
 
 
@@ -41,6 +41,7 @@ void sumBlock(int *matrix, int equals[3], int numOpe, int pos, int *sumScore){
       *(matrix+(pos+equals[i])) = 0;
     }
   }
+
   redefineBlock(matrix);
   
 }
@@ -148,16 +149,17 @@ int joinAll(int *matrix, int * score){
           }
         }
 
+
         if(numOpe > 0){
           sumBlock(matrix, equals, numOpe, j, score);
           redefine = true;
         }
       }
     }
+
     if(redefine)
       joinAll(matrix, score);
-    else
-      return 0;
+
   return 1;
     
 }
@@ -168,12 +170,10 @@ void joinBlock(int *matrix, int column, int row, int *score){
 
   int equals[3] ={0,0,0};
   int numOpe = 0;
-  int reset = 1;
-  row = ((row/70)-2)*7;
+  int reset = 0;
 
   int position = column+row;
 
- 
   //line top
   if(column==0){
     if(*(matrix+(position)) == *(matrix+(position+7))){
@@ -266,14 +266,15 @@ void joinBlock(int *matrix, int column, int row, int *score){
       }   
     }
   }
-  
+
   if(numOpe > 0){
     sumBlock(matrix, equals, numOpe, position, score);
+    reset =1;
   }
 
-  if(reset)
+  if(reset){
     reset = joinAll(matrix, score);
-  return;
+  }
 
 }
 

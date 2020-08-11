@@ -88,7 +88,6 @@ int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_DISPLAY* disp, ALLEGRO_EVENT ev
                int current, int *score, unsigned int countTime){
   
 
-  //if(se a linha do poscurrent nao tiver mais espaço e o ultimo bloco for diferente do bloco current )
 
   PosUpdate *posUpdate = pos; 
 
@@ -106,8 +105,7 @@ int onUpdate(ALLEGRO_EVENT_QUEUE* queue, ALLEGRO_DISPLAY* disp, ALLEGRO_EVENT ev
     *(positionYX) = *(positionYX+1) - 60;
     int posi = (((*(positionYX+1)+5)/70)-2)*7;
      *(matrix+posi+(posUpdate->posCurrent)) = current;
-    int row = *(positionYX+1) + 5;
-    joinBlock(matrix, posUpdate->posCurrent, 42, score);
+    joinBlock(matrix, posUpdate->posCurrent, posi, score);
     return 2;
   }
 

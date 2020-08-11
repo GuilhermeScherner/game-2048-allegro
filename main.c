@@ -173,6 +173,8 @@ int main(int argc, char *argv[])
         pos.posCurrent = 0;
         stateGame = Play;
         returnPause = 0;
+        current = nextBlock(matrix, -10);
+        next = nextBlock(matrix, 0);
       }
     }else if(stateGame == Play){
       
@@ -191,6 +193,7 @@ int main(int argc, char *argv[])
         positionYX[2] = 5;
         positionYX[3] = 65;
         pos.posCurrent = 0;
+
       }
       else if(returnUpdate==3) {
         initPause = time(0);
